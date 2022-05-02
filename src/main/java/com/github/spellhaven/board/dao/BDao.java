@@ -111,6 +111,8 @@ public class BDao {
 	// 글 '목록'과 다르게, 글 한 놈에 해당하는 것만 오면 된다. 그래서 리턴형이 ArrayList가 아닌 그냥 BDto다.
 	public BDto content_view(String str_id) {
 		
+		upHit(str_id); // 실행될 때마다 누른 글의 조회수를 1 증가시켜 주는 놈, upHit().
+		
 		BDto dto = null;
 		
 		String sql = "SELECT * FROM jsp_board WHERE bid = ?"; 
@@ -200,11 +202,120 @@ public class BDao {
 				e.printStackTrace();
 			}			
 			
-		}
-		
-		
+		}		
 		
 	}
 	
+
+	// 글삭 해 주는 놈, delete()를 만들어 보자.
+	public void delete(String bid) {
+	
+		String sql = "DELETE FROM jsp_board WHERE bid = ?";
+		
+		int dbFlag = 0;
+		Connection conn = null;
+		PreparedStatement pstmt = null;//sql 실행 객체
+		
+		try {
+			Class.forName(driverName);//jdbc 드라이버 로딩
+			conn = DriverManager.getConnection(url, user, password);//DB 연동			
+			pstmt = conn.prepareStatement(sql);
+			
+			// String sql에 하나 있는 ?를 채워 주는 놈.
+			pstmt.setString(1, bid);			
+			
+			dbFlag = pstmt.executeUpdate();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			}			
+			
+		}		
+	}	
+	
+	
+	
+	// 조회수 세는 방법: content_view()가 실행될 때마다 조회수를 1씩 올려 주면 된다.
+	// 1씩 올려 주는 함수 upHit()를 만든 후, 그걸 content_view() 안에 쓰면 되겠지, ㅋ?
+	// hit()를 private로 만들어야 하는 이유: 외부에서 얘를 억지로 실행시켜서 조회수 주작할 수도 있어서.
+	
+	// 아이디를 아규먼트로 받아야 한다. 누른 글만 조회수 +1 해야지. 모든 글의 조회수를 1씩 늘릴 건 아니잖.
+	private void upHit(String bid) {
+				
+		// sql 식에서는 bhit++라고 쓰면 안 된다. 그대로 써야 한다. (프로그래밍 언어가 아니라 다른 언어잔아.)
+		String sql = "UPDATE jsp_board SET bhit = bhit + 1 WHERE bid = ?";
+		
+		int dbFlag = 0;
+		Connection conn = null;
+		PreparedStatement pstmt = null;//sql 실행 객체
+		
+		try {
+			Class.forName(driverName);//jdbc 드라이버 로딩
+			conn = DriverManager.getConnection(url, user, password);//DB 연동			
+			pstmt = conn.prepareStatement(sql);
+			
+			// String sql의 4개의 ?를 순서대로 채워 주자. 그래서 bid가 4번째 순서다 유의하자 ㅋ
+
+			pstmt.setString(1, bid);			
+			
+			dbFlag = pstmt.executeUpdate();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			}			
+			
+		}
+		
+	}	
+	
+	
+	
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

@@ -63,6 +63,9 @@ public class BFrontController extends HttpServlet {
 				viewPage = "write_view.jsp"; // 글쓰기 화면 보기 요청을 하면, write_view.jsp 페이지로 보내 줘라.
 							
 		} else if (com.equals("/delete.do")) { // 글 삭제 요청
+			command = new BDeleteCommand();
+			command.execute(request, response);			
+			viewPage = "list.do"; // 글삭 끝나면 글목록으로 ㄱㄱ하자.
 			
 		} else if (com.equals("/modify.do")) { // 글 수정 요청			
 			command = new BModifyCommand();

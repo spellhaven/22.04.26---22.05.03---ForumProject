@@ -44,7 +44,7 @@
 			<tr>
 				<td colspan = "2" align = "center"><input type = "submit" value = "글 수정">
 				&nbsp; &nbsp; &nbsp; &nbsp;
-				<a href = "delete.do">글삭제</a>
+				<a href = "delete.do?bid=${content_view.bid}">글삭제</a>
 				&nbsp; &nbsp; &nbsp; &nbsp;
 				<a href = "list.do">글목록보기</a></td>
 			</tr>
