@@ -48,25 +48,26 @@ public class BFrontController extends HttpServlet {
 		BCommand command = null;
 		
 		String uri = request.getRequestURI(); // 클라이언트가 요청한 uri 전부 가져오기. (uri랑 url의 차이가 뭐더라? 맨날 헷갈리네.)
-		String conPath = request.getContextPath(); // Context Path가 뭔진 저번 시간에 말씀하셨지만, 나는 오류랑 씨름하느라 잘 못 들었다.
-		String com = uri.substring(conPath.length()); //전체 uri에서 Context Path 길이만큼 빼면 Command가 됨
+		String conPath = request.getContextPath(); // Context Path가 뭔진 저번 시간에 말씀하셨지만, 나는 오류랑 씨름하느라 잘 못 들었다. 대충 url 앞부분이긴 했다.
+		String com = uri.substring(conPath.length()); //전체 uri에서 Context Path 빼면 Command가 됨
 		
 		
-		// ㅇㄷ로 가고 싶다는 명령에 따라 그러려면 정확히 ㅇㄷ로 가면 된다고 정해 주는 놈.
-		// 컨트롤러는 커맨드를 호출한다.
+		// ㅇㄷ로 가고 싶다는 Command를 보고, 그러려면 정확히 ㅇㄷ로 가면 된다고 정해 주는 놈.
+		// (즉, 컨트롤러는 커맨드를 호출한다는 뜻이다.)
 		if(com.equals("/list.do")) { // 글 목록 보기 요청		
 			command = new BListCommand(); // 와! 업캐스팅!
 			command.execute(request, response);			
 			viewPage = "list.jsp";
 			
-		} else if (com.equals("/write_view.do")) { // 글 내용 보기 요청	
-				viewPage = "write_view.jsp"; // 글 내용 보기 요청을 하면, write_view.jsp 페이지로 보내 줘라.
+		} else if (com.equals("/write_view.do")) { // 글쓰기 화면 보기 요청	
+				viewPage = "write_view.jsp"; // 글쓰기 화면 보기 요청을 하면, write_view.jsp 페이지로 보내 줘라.
 							
 		} else if (com.equals("/delete.do")) { // 글 삭제 요청
 			
 		} else if (com.equals("/modify.do")) { // 글 수정 요청			
-//			command = new BModifyCommand();
-//			command.execute(request, response);	
+			command = new BModifyCommand();
+			command.execute(request, response);			
+			viewPage = "list.do"; //글 수정을 끝내면 글목록으로 간다는 얘기
 			
 		} else if (com.equals("/write.do")) { // 글쓰기 요청
 //			BWriteCommand command = new BWriteCommand();

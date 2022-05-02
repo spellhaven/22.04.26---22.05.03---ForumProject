@@ -22,7 +22,10 @@
 			<td><b>조훼수</b></td>
 		</tr>
 		
-		<c:forEach items = "${list}" var = "dto"> 
+		<c:forEach items = "${list}" var = "dto">
+		<!-- 여튼 BListCommand.java에서 dtos의 이름을 "list"라고 만들었는데,
+		var = "dto"라는 말은 그걸 알겠으나, 여기서는 걔의 이름을 "dto"라고 하겠다는 말이다.
+		그래서 line 35부터 dto.bid 뭐 이렇게 쓰는 거고. --> 
 		<!-- 우와 스크립틀릿 ㅈㄹ 안 하고 JSTL로 하니 훨씬 편하내. ㅋ. -->
 			<tr>
 				<td>

@@ -13,7 +13,7 @@ public class BDao {
 	
 	
 	// DB에 직접 넣어 주는 write 메소드를 만들어 주자. 여기가 DAO 안이라는 걸 잘 기억해봐. 최종 단계임 ㅋ
-	// 조회수 bhit은 유저가 입력한 게 아니고 알아서 만들어질 거다. 그래서 나머지 네 놈만 받음 ㅋ
+	// 조회수 bhit은 유저가 입력한 게 아니고 알아서 만들어질 거다. 그래서 나머지 네 argument만 직접입력으로 받음 ㅋ
 	public void write(String bid, String bname, String btitle, String bcontent) {
 		
 		String sql = "INSERT INTO jsp_board(bid, bname, btitle, bcontent, bhit) VALUES('" + bid + "','" + bname + "','" + btitle + "','" + bcontent + "', 0)";
@@ -49,7 +49,7 @@ public class BDao {
 	
 	
 	
-	// 내가 글 목록을 불러오는 함수의 리턴형이 뭐여야 할까? ArrayList여야 한다는 걸 맞췄디 ㅋ 
+	// 글 목록을 불러오는 함수의 리턴형이 뭐여야 할까? ArrayList여야 한다는 걸 맞췄디 ㅋ 
 	// (우와. 예전에 배운 개념인데도 맞췄다, 크킄. 크킄. 자랑스럽다. 크킄. 하하. 크킄. 하하.)
 	// 어. 근데 <BDto> 넣어야 되는 건 몯 맞춴내 ㅋ ㅋ ㅋ 크킄 ArrayList 헫깔려. 크킄 크킄.
 	public ArrayList<BDto> list() {
@@ -107,12 +107,13 @@ public class BDao {
 		
 	
 	
-	
+	// 이미 작성된 글을 클릭하면 내용을 보게 해 주는 놈, content_view를 만들어 보자.
+	// 글 '목록'과 다르게, 글 한 놈에 해당하는 것만 오면 된다. 그래서 리턴형이 ArrayList가 아닌 그냥 BDto다.
 	public BDto content_view(String str_id) {
 		
 		BDto dto = null;
 		
-		String sql = "SELECT * FROM jsp_board WHERE id = ?";
+		String sql = "SELECT * FROM jsp_board WHERE bid = ?"; 
 		
 		Connection conn = null;
 		PreparedStatement pstmt = null;//sql 실행 객체
@@ -157,12 +158,53 @@ public class BDao {
 			}			
 			
 		}
-		
-		
+			
 		return dto;
 	}
 	
 	
+	// 글 수정해 주는 놈 만들자. String bid는 유저가 변경하는 값으로 만들지 않았지만, Primary Key라서 넣어야 한다.
+	// 않 그러면 ㅇㄴ 대체 글을 수정하긴 하는데 무슨 글을 수정해야 하냐고?? <= 일케됨.
+	public void modify(String bid, String bname, String btitle, String bcontent) {
+	
+		String sql = "UPDATE jsp_board SET bname = ?, btitle = ?, bcontent = ? WHERE bid = ?";
+		
+		int dbFlag = 0;
+		Connection conn = null;
+		PreparedStatement pstmt = null;//sql 실행 객체
+		
+		try {
+			Class.forName(driverName);//jdbc 드라이버 로딩
+			conn = DriverManager.getConnection(url, user, password);//DB 연동			
+			pstmt = conn.prepareStatement(sql);
+			
+			// String sql의 4개의 ?를 순서대로 채워 주자. 그래서 bid가 4번째 순서다 유의하자 ㅋ
+			pstmt.setString(1, bname);
+			pstmt.setString(2, btitle);
+			pstmt.setString(3, bcontent);
+			pstmt.setString(4, bid);			
+			
+			dbFlag = pstmt.executeUpdate();
+			
+		} catch(Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				if(pstmt != null) {
+					pstmt.close();
+				}
+				if(conn != null) {
+					conn.close();
+				}
+			} catch(Exception e) {
+				e.printStackTrace();
+			}			
+			
+		}
+		
+		
+		
+	}
 	
 }
 
